@@ -19,7 +19,7 @@ def main():
     create_tables()
 
     conn = mysql.connector.connect(
-        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, name=DB_NAME
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD
     )
     cursor = conn.cursor()
 
@@ -39,3 +39,6 @@ def main():
         conn.commit()
         conn.close()
         cursor.close()
+
+if __name__ == "__main__":
+    main()
