@@ -17,7 +17,7 @@ def perform_action(answers):
         )
         contact_number = str(
             inquirer.text(
-                message="Enter your contact number", 
+                message="Enter your contact number",
                 validate=validate_contact_number,
             )
         )
@@ -25,6 +25,8 @@ def perform_action(answers):
             inquirer.text(message="Enter your blood type", validate=validate_blood_type)
         )
         donate_blood(name, contact_number, blood_type)
+    elif answers["options"] == "Admin Access":
+        pass
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
