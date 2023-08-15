@@ -1,7 +1,6 @@
 import mysql.connector
-from bloodback_functions import (
+from models import (
     DB_HOST,
-    DB_NAME,
     DB_PASSWORD,
     DB_USER,
     create_tables,
@@ -28,7 +27,7 @@ def main():
             inquirer.List(
                 "options",
                 message="What would you like to do?",
-                choices=["Donate Blood", "View blood donors", "Admin Access", "Exit"],
+                choices=["Donate blood", "View blood donors", "Admin Access", "Exit"],
             )
         ]
 
