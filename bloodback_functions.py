@@ -17,7 +17,8 @@ def perform_action(answers):
         )
         contact_number = str(
             inquirer.text(
-                message="Enter your contact number", validate=validate_contact_number
+                message="Enter your contact number", 
+                validate=validate_contact_number,
             )
         )
         blood_type = str(
