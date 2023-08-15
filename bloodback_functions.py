@@ -3,15 +3,26 @@ import mysql.connector
 from random import randint
 from rich.console import Console
 from rich.table import Table
-
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
+from validate import validate_blood_type, validate_contact_number, validate_name
 
 
 def perform_action(answers):
     if answers["options"] == "Donate blood":
-        name = str(input("Enter your name: "))
-        contact_number = str(input("Enter your contact number: "))
-        blood_type = str(input("Enter your blood type: "))
+        name = str(
+            inquirer.text(
+                message="Enter your name",
+                validate=validate_name,
+            )
+        )
+        contact_number = str(
+            inquirer.text(
+                message="Enter your contact number", validate=validate_contact_number
+            )
+        )
+        blood_type = str(
+            inquirer.text(message="Enter your blood type", validate=validate_blood_type)
+        )
         donate_blood(name, contact_number, blood_type)
     elif answers["options"] == "View blood donors":
         questions = [
@@ -25,10 +36,19 @@ def perform_action(answers):
         if answers["category"] == "Entire list":
             view_entire_list()
         elif answers["category"] == "By name":
-            name = input("Enter name to search: ")
+            name = str(
+                inquirer.text(
+                    message="Enter your name",
+                    validate=validate_name,
+                )
+            )
             view_by_name(name)
         elif answers["category"] == "By blood type":
-            blood_type = input("Enter blood type to search: ")
+            blood_type = str(
+                inquirer.text(
+                    message="Enter your blood type", validate=validate_blood_type
+                )
+            )
             view_by_blood_type(blood_type)
 
 
@@ -114,8 +134,10 @@ def view_by_name(name):
         table.add_column("Blood Type")
         table.add_column("Contact Number")
 
-        for id, donor_id,  name, blood_type, contact_number in data:
-            table.add_row(str(id), str(donor_id), str(name), str(blood_type), str(contact_number))
+        for id, donor_id, name, blood_type, contact_number in data:
+            table.add_row(
+                str(id), str(donor_id), str(name), str(blood_type), str(contact_number)
+            )
 
         console.print(table)
     except mysql.connector.Error as e:
@@ -123,6 +145,7 @@ def view_by_name(name):
     finally:
         cursor.close()
         conn.close()
+
 
 def view_by_blood_type(blood_type):
     conn = mysql.connector.connect(
@@ -144,8 +167,10 @@ def view_by_blood_type(blood_type):
         table.add_column("Blood Type")
         table.add_column("Contact Number")
 
-        for id, donor_id,  name, blood_type, contact_number in data:
-            table.add_row(str(id), str(donor_id), str(name), str(blood_type), str(contact_number))
+        for id, donor_id, name, blood_type, contact_number in data:
+            table.add_row(
+                str(id), str(donor_id), str(name), str(blood_type), str(contact_number)
+            )
 
         console.print(table)
     except mysql.connector.Error as e:
