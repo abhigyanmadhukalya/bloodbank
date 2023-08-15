@@ -1,6 +1,8 @@
 import mysql.connector
+from bloodback_functions import perform_action
 from models import (
     DB_HOST,
+    DB_NAME,
     DB_PASSWORD,
     DB_USER,
     create_tables,
@@ -18,7 +20,7 @@ def main():
     create_tables()
 
     conn = mysql.connector.connect(
-        host=DB_HOST, user=DB_USER, password=DB_PASSWORD
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
     cursor = conn.cursor()
 
@@ -32,6 +34,7 @@ def main():
         ]
 
         answers = inquirer.prompt(questions)
+        perform_action(answers)
     except mysql.connector.Error as e:
         print(f"Something went wrong: {str(e)}")
     finally:
