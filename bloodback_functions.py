@@ -4,7 +4,7 @@ from random import randint
 from rich.console import Console
 from rich.table import Table
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
-from validate import validate_blood_type, validate_contact_number, validate_name
+from validate import validate_blood_type, validate_contact_number, validate_name, validate_admin
 
 
 def perform_action(answers):
@@ -26,7 +26,12 @@ def perform_action(answers):
         )
         donate_blood(name, contact_number, blood_type)
     elif answers["options"] == "Admin Access":
-        pass
+        username = str(
+            inquirer.text(
+                message="Enter your username",
+                validate=validate_admin
+            )
+        )
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
