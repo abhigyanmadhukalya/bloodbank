@@ -29,7 +29,7 @@ def main():
             inquirer.List(
                 "options",
                 message="What would you like to do?",
-                choices=["Donate blood", "View blood donors", "Admin Access", "Exit"],
+                choices=["Donate blood", "View blood donors", "Exit"],
             )
         ]
 
