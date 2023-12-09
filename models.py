@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Remember to add these to your environmental variables
 DB_HOST = "localhost"
 DB_USER = environ["mariadb_username"]
 DB_PASSWORD = environ["mariadb_password"]
