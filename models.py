@@ -1,8 +1,6 @@
 import mysql.connector
 from os import environ
-from dotenv import load_dotenv
 
-load_dotenv()
 
 # Remember to add these to your environmental variables
 DB_HOST = "localhost"
