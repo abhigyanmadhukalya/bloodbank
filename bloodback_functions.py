@@ -157,7 +157,7 @@ def view_by_blood_type(blood_type):
     )
     cursor = conn.cursor()
     try:
-        query = "SELECT id, donor_id, name, blood_type, contact_number from donors WHERE name = %s"
+        query = "SELECT id, donor_id, name, blood_type, contact_number from donors WHERE blood_type = %s"
         cursor.execute(query, (blood_type,))
         data = cursor.fetchall()
 
