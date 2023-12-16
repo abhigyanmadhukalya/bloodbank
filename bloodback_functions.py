@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 from validate import validate_blood_type, validate_contact_number, validate_name
+from sys import exit
 
 
 def perform_action(answers):
@@ -25,6 +26,8 @@ def perform_action(answers):
             inquirer.text(message="Enter your blood type", validate=validate_blood_type)
         )
         donate_blood(name, contact_number, blood_type)
+    elif answers["options"] == "Exit":
+        exit()
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
