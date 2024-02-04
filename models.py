@@ -4,8 +4,8 @@ from os import environ
 
 # Remember to add these to your environmental variables
 DB_HOST = "localhost"
-DB_USER = environ["mariadb_username"]
-DB_PASSWORD = environ["mariadb_password"]
+DB_USER = environ["mysql_username"]
+DB_PASSWORD = environ["mysql_password"]
 DB_NAME = "bloodbank"
 
 

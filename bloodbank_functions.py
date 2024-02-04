@@ -118,7 +118,7 @@ def view_entire_list():
         conn.close()
 
 
-def view_by_name(name):
+def view_by_name(name: str):
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -151,7 +151,7 @@ def view_by_name(name):
         conn.close()
 
 
-def view_by_blood_type(blood_type):
+def view_by_blood_type(blood_type: str):
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
