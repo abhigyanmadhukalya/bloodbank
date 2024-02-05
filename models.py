@@ -9,7 +9,7 @@ DB_PASSWORD = environ["mysql_password"]
 DB_NAME = "bloodbank"
 
 
-def create_database():
+def create_database() -> None:
     try:
         conn = mysql.connector.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD)
         cursor = conn.cursor()
@@ -25,7 +25,7 @@ def create_database():
         print(f"Something went wrong during database creation: {str(e)}")
 
 
-def create_tables():
+def create_tables() -> None:
     try:
         conn = mysql.connector.connect(
             host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
@@ -36,7 +36,7 @@ def create_tables():
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS donors (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+                id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 blood_type VARCHAR(3) NOT NULL,
                 contact_number VARCHAR(15),
