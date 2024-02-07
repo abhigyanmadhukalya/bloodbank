@@ -1,6 +1,5 @@
 import inquirer
 import mysql.connector
-from getpass import getpass
 from random import randint
 from rich.console import Console
 from rich.table import Table
@@ -9,8 +8,6 @@ from validate import (
     validate_blood_type,
     validate_contact_number,
     validate_name,
-    validate_password,
-    validate_username,
 )
 from admin import admin_sign_in, admin_register
 from sys import exit
@@ -18,22 +15,7 @@ from sys import exit
 
 def perform_action(answers):
     if answers["options"] == "Donate blood":
-        name = str(
-            inquirer.text(
-                message="Enter your name",
-                validate=validate_name,
-            )
-        )
-        contact_number = str(
-            inquirer.text(
-                message="Enter your contact number",
-                validate=validate_contact_number,
-            )
-        )
-        blood_type = str(
-            inquirer.text(message="Enter your blood type", validate=validate_blood_type)
-        )
-        donate_blood(name, contact_number, blood_type)
+        donate_blood()
     elif answers["options"] == "Exit":
         exit()
     elif answers["options"] == "Administrator":
@@ -46,26 +28,10 @@ def perform_action(answers):
         ]
         answers = inquirer.prompt(questions)
         if answers["category"] == "Admin Sign in":
-            username = str(
-                inquirer.text(
-                    message="Enter username",
-                    validate=validate_username,
-                )
-            )
-            password = getpass(prompt="Enter password: ")
-            admin_sign_in(username, password)
+            admin_sign_in()
 
         if answers["category"] == "Admin Register":
-            username = str(
-                inquirer.text(
-                    message="Enter username",
-                    validate=validate_username,
-                )
-            )
-            password = str(
-                inquirer.text(message="Enter password", validate=validate_password)
-            )
-            admin_register(username, password)
+            admin_register()
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
@@ -78,23 +44,27 @@ def perform_action(answers):
         if answers["category"] == "Entire list":
             view_entire_list()
         elif answers["category"] == "By name":
-            name = str(
-                inquirer.text(
-                    message="Enter your name",
-                    validate=validate_name,
-                )
-            )
-            view_by_name(name)
+            view_by_name()
         elif answers["category"] == "By blood type":
-            blood_type = str(
-                inquirer.text(
-                    message="Enter your blood type", validate=validate_blood_type
-                )
-            )
-            view_by_blood_type(blood_type)
+            view_by_blood_type()
 
 
-def donate_blood(name: str, contact_number: str, blood_type: str):
+def donate_blood():
+    name = str(
+        inquirer.text(
+            message="Enter your name",
+            validate=validate_name,
+        )
+    )
+    contact_number = str(
+        inquirer.text(
+            message="Enter your contact number",
+            validate=validate_contact_number,
+        )
+    )
+    blood_type = str(
+        inquirer.text(message="Enter your blood type", validate=validate_blood_type)
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -156,7 +126,13 @@ def view_entire_list():
         conn.close()
 
 
-def view_by_name(name: str):
+def view_by_name():
+    name = str(
+        inquirer.text(
+            message="Enter your name",
+            validate=validate_name,
+        )
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -189,7 +165,10 @@ def view_by_name(name: str):
         conn.close()
 
 
-def view_by_blood_type(blood_type: str):
+def view_by_blood_type():
+    blood_type = str(
+        inquirer.text(message="Enter your blood type", validate=validate_blood_type)
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )

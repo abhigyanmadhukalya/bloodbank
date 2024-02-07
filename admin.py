@@ -1,8 +1,18 @@
 import mysql.connector
+import inquirer
+from getpass import getpass
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
+from validate import validate_username
 
 
-def admin_register(username: str, password: str) -> None:
+def admin_register() -> None:
+    username = str(
+        inquirer.text(
+            message="Enter username",
+            validate=validate_username,
+        )
+    )
+    password = str(inquirer.text(message="Enter password", validate=validate_password))
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -31,7 +41,14 @@ def admin_register(username: str, password: str) -> None:
         conn.close()
 
 
-def admin_sign_in(username: str, password: str):
+def admin_sign_in():
+    username = str(
+        inquirer.text(
+            message="Enter username",
+            validate=validate_username,
+        )
+    )
+    password = getpass(prompt="Enter password: ")
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
