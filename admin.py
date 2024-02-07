@@ -5,6 +5,22 @@ from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 from validate import validate_username
 
 
+def admin_action():
+    questions = [
+        inquirer.List(
+            "category",
+            message="What would you like to do?",
+            choices=["Admin Sign in", "Admin Register"],
+        )
+    ]
+    answers = inquirer.prompt(questions)
+    if answers["category"] == "Admin Sign in":
+        admin_sign_in()
+
+    if answers["category"] == "Admin Register":
+        admin_register()
+
+
 def admin_register() -> None:
     username = str(
         inquirer.text(

@@ -9,7 +9,7 @@ from validate import (
     validate_contact_number,
     validate_name,
 )
-from admin import admin_sign_in, admin_register
+from admin import admin_action
 from sys import exit
 
 
@@ -19,19 +19,7 @@ def perform_action(answers):
     elif answers["options"] == "Exit":
         exit()
     elif answers["options"] == "Administrator":
-        questions = [
-            inquirer.List(
-                "category",
-                message="What would you like to do?",
-                choices=["Admin Sign in", "Admin Register"],
-            )
-        ]
-        answers = inquirer.prompt(questions)
-        if answers["category"] == "Admin Sign in":
-            admin_sign_in()
-
-        if answers["category"] == "Admin Register":
-            admin_register()
+        admin_action()
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
