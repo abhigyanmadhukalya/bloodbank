@@ -1,6 +1,6 @@
-import mysql.connector
 from os import environ
 
+import mysql.connector
 
 # Remember to add these to your environmental variables
 DB_HOST = "localhost"
@@ -41,6 +41,17 @@ def create_tables() -> None:
                 blood_type VARCHAR(3) NOT NULL,
                 contact_number VARCHAR(15),
                 donor_id INT UNIQUE
+            )
+            """
+        )
+
+        # Create admins table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS admins (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL
             )
             """
         )

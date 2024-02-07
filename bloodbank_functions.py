@@ -1,33 +1,27 @@
+from random import randint
+from sys import exit
+
 import inquirer
 import mysql.connector
-from random import randint
 from rich.console import Console
 from rich.table import Table
+
+from admin import admin_action
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
-from validate import validate_blood_type, validate_contact_number, validate_name
-from sys import exit
+from validate import (
+    validate_blood_type,
+    validate_contact_number,
+    validate_name,
+)
 
 
 def perform_action(answers):
     if answers["options"] == "Donate blood":
-        name = str(
-            inquirer.text(
-                message="Enter your name",
-                validate=validate_name,
-            )
-        )
-        contact_number = str(
-            inquirer.text(
-                message="Enter your contact number",
-                validate=validate_contact_number,
-            )
-        )
-        blood_type = str(
-            inquirer.text(message="Enter your blood type", validate=validate_blood_type)
-        )
-        donate_blood(name, contact_number, blood_type)
+        donate_blood()
     elif answers["options"] == "Exit":
         exit()
+    elif answers["options"] == "Administrator":
+        admin_action()
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(
@@ -40,23 +34,27 @@ def perform_action(answers):
         if answers["category"] == "Entire list":
             view_entire_list()
         elif answers["category"] == "By name":
-            name = str(
-                inquirer.text(
-                    message="Enter your name",
-                    validate=validate_name,
-                )
-            )
-            view_by_name(name)
+            view_by_name()
         elif answers["category"] == "By blood type":
-            blood_type = str(
-                inquirer.text(
-                    message="Enter your blood type", validate=validate_blood_type
-                )
-            )
-            view_by_blood_type(blood_type)
+            view_by_blood_type()
 
 
-def donate_blood(name: str, contact_number: str, blood_type: str):
+def donate_blood():
+    name = str(
+        inquirer.text(
+            message="Enter your name",
+            validate=validate_name,
+        )
+    )
+    contact_number = str(
+        inquirer.text(
+            message="Enter your contact number",
+            validate=validate_contact_number,
+        )
+    )
+    blood_type = str(
+        inquirer.text(message="Enter your blood type", validate=validate_blood_type)
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -118,7 +116,13 @@ def view_entire_list():
         conn.close()
 
 
-def view_by_name(name: str):
+def view_by_name():
+    name = str(
+        inquirer.text(
+            message="Enter your name",
+            validate=validate_name,
+        )
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -151,7 +155,10 @@ def view_by_name(name: str):
         conn.close()
 
 
-def view_by_blood_type(blood_type: str):
+def view_by_blood_type():
+    blood_type = str(
+        inquirer.text(message="Enter your blood type", validate=validate_blood_type)
+    )
     conn = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
@@ -180,5 +187,27 @@ def view_by_blood_type(blood_type: str):
     except mysql.connector.Error as e:
         print(f"Something went wrong: {str(e)}")
     finally:
+        cursor.close()
+        conn.close()
+
+
+def modify_entry_to_donor_table(
+    name: str, contact_number: str, blood_type: str, old_name: str
+):
+    conn = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+            update donors set name = %s, contact_number = %s, blood_type = %s where name = %s;
+            """,
+            (name, contact_number, blood_type, name),
+        )
+    except mysql.connector.Error as e:
+        print(f"Something went wrong: {e}")
+    finally:
+        conn.commit()
         cursor.close()
         conn.close()
