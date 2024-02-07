@@ -4,23 +4,25 @@ from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 
 def admin_register(username: str, password: str) -> None:
     conn = mysql.connector.connect(
-        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db=DB_NAME
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
     cursor = conn.cursor()
     try:
         cursor.execute(
-            f"""
-        select count(*) from admins where username = {username};
-        """
+            """
+            SELECT COUNT(*) FROM admins WHERE username = %s;
+            """,
+            (username,),
         )
-        if cursor.fetchone()[0] == 0:
-            print(f"Username {username} does not exist.")
+        if cursor.fetchone()[0] != 0:
+            print(f"Username {username} already exists.")
         else:
             query = """
-                insert into admins (username, password) values (%s, %s)
+                INSERT INTO admins (username, password) VALUES (%s, %s);
             """
             values = (username, password)
             cursor.execute(query, values)
+            print("Registration successful")
     except mysql.connector.Error as e:
         print(f"Something went wrong: {str(e)}")
     finally:
@@ -31,21 +33,24 @@ def admin_register(username: str, password: str) -> None:
 
 def admin_sign_in(username: str, password: str):
     conn = mysql.connector.connect(
-        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db=DB_NAME
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
     cursor = conn.cursor()
     try:
         cursor.execute(
-            f"""
-            select count(*) from admins where username = {username};
             """
+            SELECT * FROM admins WHERE username = %s;
+            """,
+            (username,),
         )
-        if cursor.fetchone()[0] == 0:
+        admin = cursor.fetchone()
+        if admin is None:
             print(f"Username {username} does not exist.")
-        users = cursor.fetchall()
-        if username == users[0][1]:
-            if password == users[0][2]:
-                print("success")
+        else:
+            if password == admin[2]:
+                print("Success")
+            else:
+                print("Incorrect password")
     except mysql.connector.Error as e:
         print(f"Something went wrong: {e}")
     finally:
