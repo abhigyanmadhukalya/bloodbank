@@ -45,6 +45,17 @@ def create_tables() -> None:
             """
         )
 
+        # Create admins table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS admins (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL
+            )
+            """
+        )
+
         conn.commit()  # Commit the changes
         cursor.close()  # Close the cursor
         conn.close()  # Close the connection
