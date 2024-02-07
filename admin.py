@@ -24,21 +24,25 @@ def admin_action():
     answers = inquirer.prompt(questions)
     if answers["category"] == "Admin Sign in":
         admin_sign_in()
-        questions = [
-            inquirer.List(
-                "job",
-                message="What would you like to do?",
-                choices=["Delete donor data", "Modify donor data"],
-            )
-        ]
-        answers = inquirer.prompt(questions)
-        if answers["job"] == "Delete donor data":
-            delete_donor_table()
-        elif answers["job"] == "Modify donor data":
-            modify_donor_table()
+        admin_tasks()
 
     if answers["category"] == "Admin Register":
         admin_register()
+
+
+def admin_tasks():
+    questions = [
+        inquirer.List(
+            "job",
+            message="What would you like to do?",
+            choices=["Delete donor data", "Modify donor data"],
+        )
+    ]
+    answers = inquirer.prompt(questions)
+    if answers["job"] == "Delete donor data":
+        delete_donor_table()
+    elif answers["job"] == "Modify donor data":
+        modify_donor_table()
 
 
 def admin_register() -> None:

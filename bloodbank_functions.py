@@ -203,7 +203,7 @@ def modify_entry_to_donor_table(
             """
             update donors set name = %s, contact_number = %s, blood_type = %s where name = %s;
             """,
-            (name, contact_number, blood_type, name),
+            (name, contact_number, blood_type, old_name),
         )
     except mysql.connector.Error as e:
         print(f"Something went wrong: {e}")
