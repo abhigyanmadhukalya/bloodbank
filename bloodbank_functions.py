@@ -1,10 +1,18 @@
 import inquirer
 import mysql.connector
+from getpass import getpass
 from random import randint
 from rich.console import Console
 from rich.table import Table
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
-from validate import validate_blood_type, validate_contact_number, validate_name
+from validate import (
+    validate_blood_type,
+    validate_contact_number,
+    validate_name,
+    validate_password,
+    validate_username,
+)
+from admin import admin_sign_in, admin_register
 from sys import exit
 
 
@@ -28,6 +36,36 @@ def perform_action(answers):
         donate_blood(name, contact_number, blood_type)
     elif answers["options"] == "Exit":
         exit()
+    elif answers["options"] == "Administrator":
+        questions = [
+            inquirer.List(
+                "category",
+                message="What would you like to do?",
+                choices=["Admin Sign in", "Admin Register"],
+            )
+        ]
+        answers = inquirer.prompt(questions)
+        if answers["category"] == "Admin Sign in":
+            username = str(
+                inquirer.text(
+                    message="Enter username",
+                    validate=validate_username,
+                )
+            )
+            password = getpass(prompt="Enter password: ")
+            admin_sign_in(username, password)
+
+        if answers["category"] == "Admin Register":
+            username = str(
+                inquirer.text(
+                    message="Enter username",
+                    validate=validate_username,
+                )
+            )
+            password = str(
+                inquirer.text(message="Enter password", validate=validate_password)
+            )
+            admin_register(username, password)
     elif answers["options"] == "View blood donors":
         questions = [
             inquirer.List(

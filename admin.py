@@ -57,3 +57,37 @@ def admin_sign_in(username: str, password: str):
         conn.commit()
         cursor.close()
         conn.close()
+
+
+def delete_donor_table():
+    conn = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+    drop table donors;
+    """
+        )
+    except mysql.connector.Error as e:
+        print(f"Something went wrong: {e}")
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def modify_donor_table():
+    conn = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
+    )
+    cursor = conn.cursor()
+    try:
+        pass
+    except mysql.connector.Error as e:
+        print(f"Something went wrong: {e}")
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
