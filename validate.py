@@ -1,6 +1,7 @@
 import re
 import inquirer.errors
 
+
 def validate_name(_, value):
     if not re.match(r"^[A-Za-z\s]+$", value):
         raise inquirer.errors.ValidationError(
@@ -24,3 +25,24 @@ def validate_blood_type(_, value):
     if value.upper() not in valid_blood_types:
         return "Invalid blood type. Please enter a valid blood type."
     return True
+
+
+def validate_username(_, value):
+    if not re.match(r"^[a-zA-Z0-9_]{3,16}$", value):
+        raise inquirer.errors.ValidationError(
+            "",
+            reason="Invalid username format.",
+        )
+    return value
+
+
+def validate_password(_, value):
+    if not re.match(
+        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", value
+    ):
+        raise inquirer.errors.ValidationError(
+            "",
+            reason="Invalid password format.",
+        )
+    return value
+
