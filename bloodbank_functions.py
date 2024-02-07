@@ -1,16 +1,18 @@
+from random import randint
+from sys import exit
+
 import inquirer
 import mysql.connector
-from random import randint
 from rich.console import Console
 from rich.table import Table
+
+from admin import admin_action
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 from validate import (
     validate_blood_type,
     validate_contact_number,
     validate_name,
 )
-from admin import admin_action
-from sys import exit
 
 
 def perform_action(answers):
@@ -185,5 +187,27 @@ def view_by_blood_type():
     except mysql.connector.Error as e:
         print(f"Something went wrong: {str(e)}")
     finally:
+        cursor.close()
+        conn.close()
+
+
+def modify_entry_to_donor_table(
+    name: str, contact_number: str, blood_type: str, old_name: str
+):
+    conn = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+            update donors set name = %s, contact_number = %s, blood_type = %s where name = %s;
+            """,
+            (name, contact_number, blood_type, name),
+        )
+    except mysql.connector.Error as e:
+        print(f"Something went wrong: {e}")
+    finally:
+        conn.commit()
         cursor.close()
         conn.close()

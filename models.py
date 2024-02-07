@@ -1,6 +1,6 @@
-import mysql.connector
 from os import environ
 
+import mysql.connector
 
 # Remember to add these to your environmental variables
 DB_HOST = "localhost"

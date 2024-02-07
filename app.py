@@ -1,15 +1,16 @@
+import inquirer
 import mysql.connector
+from rich.traceback import install
+
 from bloodbank_functions import perform_action
 from models import (
     DB_HOST,
     DB_NAME,
     DB_PASSWORD,
     DB_USER,
-    create_tables,
     create_database,
+    create_tables,
 )
-from rich.traceback import install
-import inquirer
 
 # Better traceback and error logging
 install(show_locals=True)
