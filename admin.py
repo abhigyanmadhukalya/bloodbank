@@ -123,11 +123,18 @@ def delete_donor_table():
     )
     cursor = conn.cursor()
     try:
-        cursor.execute(
-            """
-    drop table donors;
-    """
-        )
+        yes_or_no = str(input("Are you sure? Y/N"))
+        if yes_or_no in "Yy":
+            cursor.execute(
+                """
+        drop table donors;
+        """
+            )
+            print("Donor data deleted successfully.")
+        elif yes_or_no in "Nn":
+            print("Deletion cancelled.")
+        else:
+            print("Incorrect answer to question. Answer with Yes(Y) or No(N)")
     except mysql.connector.Error as e:
         print(f"Something went wrong: {e}")
     finally:
