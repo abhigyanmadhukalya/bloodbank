@@ -2,8 +2,7 @@ from getpass import getpass
 
 import inquirer
 import mysql.connector
-from bloodbank_functions import modify_entry_to_donor_table
-
+import bloodbank_functions
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 from validate import (
     validate_blood_type,
@@ -165,7 +164,9 @@ def modify_donor_table():
                 message="Enter new blood type for donor: ", validate=validate_blood_type
             )
         )
-        modify_entry_to_donor_table(new_name, new_contact_number, new_blood_type, name)
+        bloodbank_functions.modify_entry_to_donor_table(
+            new_name, new_contact_number, new_blood_type, name
+        )
         print("Successful")
 
     except mysql.connector.Error as e:
