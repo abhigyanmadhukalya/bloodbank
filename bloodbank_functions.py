@@ -1,8 +1,12 @@
 from random import randint
 from sys import exit
+from typing import Any, Dict, List
 
 import inquirer
 import mysql.connector
+from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract
+from mysql.connector.pooling import PooledMySQLConnection
+from mysql.connector.types import RowItemType, RowType
 from rich.console import Console
 from rich.table import Table
 
@@ -23,14 +27,14 @@ def perform_action(answers):
     elif answers["options"] == "Administrator":
         admin_action()
     elif answers["options"] == "View blood donors":
-        questions = [
+        questions: list = [
             inquirer.List(
                 "category",
                 message="How would you like to view them? ",
                 choices=["Entire list", "By name", "By blood type"],
             )
         ]
-        answers = inquirer.prompt(questions)
+        answers: dict[Any, Any] | None = inquirer.prompt(questions)
         if answers["category"] == "Entire list":
             view_entire_list()
         elif answers["category"] == "By name":
@@ -40,29 +44,29 @@ def perform_action(answers):
 
 
 def donate_blood():
-    name = str(
+    name: str = str(
         inquirer.text(
             message="Enter your name",
             validate=validate_name,
         )
     )
-    contact_number = str(
+    contact_number: str = str(
         inquirer.text(
             message="Enter your contact number",
             validate=validate_contact_number,
         )
     )
-    blood_type = str(
+    blood_type: str = str(
         inquirer.text(message="Enter your blood type", validate=validate_blood_type)
     )
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
 
     try:
         while True:
-            donor_id = randint(100000, 999999)
+            donor_id: int = randint(100000, 999999)
             # Check if the generated donor ID already exists
             cursor.execute(
                 "SELECT COUNT(*) FROM donors WHERE donor_id = %s", (donor_id,)
@@ -73,7 +77,7 @@ def donate_blood():
         INSERT INTO donors (name, contact_number, blood_type, donor_id)
         VALUES (%s, %s, %s, %s);
         """
-        values = (name, contact_number, blood_type, donor_id)
+        values: tuple[str, str, str, int] = (name, contact_number, blood_type, donor_id)
         cursor.execute(query, values)
     except mysql.connector.Error as e:
         print(f"Something went wrong: {str(e)}")
@@ -84,19 +88,20 @@ def donate_blood():
 
 
 def view_entire_list():
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         cursor.execute(
             "SELECT id, donor_id, name, blood_type, contact_number FROM donors"
         )
-        data = cursor.fetchall()
+        data: List[RowType | Dict[str, RowItemType]] | Any = cursor.fetchall()
 
-        console = Console()
+        console: Console = Console()
 
-        table = Table(title="Entire list of donors")
+        table: Table = Table(title="Entire list of donors")
+
         table.add_column("ID")
         table.add_column("Donor ID")
         table.add_column("Name")
@@ -117,24 +122,24 @@ def view_entire_list():
 
 
 def view_by_name():
-    name = str(
+    name: str = str(
         inquirer.text(
             message="Enter your name",
             validate=validate_name,
         )
     )
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         query = "SELECT id, donor_id, name, blood_type, contact_number from donors WHERE name = %s"
         cursor.execute(query, (name,))
-        data = cursor.fetchall()
+        data: List[RowType | Dict[str, RowItemType]] | Any = cursor.fetchall()
 
-        console = Console()
+        console: Console = Console()
 
-        table = Table(title=f"List of people with name: {name}")
+        table: Table = Table(title=f"List of people with name: {name}")
 
         table.add_column("ID")
         table.add_column("Donor ID")
@@ -156,21 +161,21 @@ def view_by_name():
 
 
 def view_by_blood_type():
-    blood_type = str(
+    blood_type: str = str(
         inquirer.text(message="Enter your blood type", validate=validate_blood_type)
     )
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         query = "SELECT id, donor_id, name, blood_type, contact_number from donors WHERE blood_type = %s"
         cursor.execute(query, (blood_type,))
-        data = cursor.fetchall()
+        data: List[RowType | Dict[str, RowItemType]] | Any = cursor.fetchall()
 
-        console = Console()
+        console: Console = Console()
 
-        table = Table(title=f"List of people with blood type: {blood_type}")
+        table: Table = Table(title=f"List of people with blood type: {blood_type}")
 
         table.add_column("ID")
         table.add_column("Donor ID")
@@ -194,10 +199,10 @@ def view_by_blood_type():
 def modify_entry_to_donor_table(
     name: str, contact_number: str, blood_type: str, old_name: str
 ):
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         cursor.execute(
             """

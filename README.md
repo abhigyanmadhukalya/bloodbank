@@ -9,11 +9,13 @@
 - [MySQL Python Connector](https://pypi.org/project/mysql-connector-python/): MySQL driver written in Python which does not depend on MySQL C client libraries and implements the DB API v2.0 specification (PEP-249).
 
 ## Database
-![db](./images/db.png)
+| During Submission | After Submission |
+| ----------------- | ---------------- |
+| ![db-old](./images/db.png) | ![db-new](./images/db_new.png)
 
 ## Screenshots
 ### Home
-![home](./images/home.png)
+![home](./images/home-new.png)
 
 ### Donating Blood
 ![donating](./images/donating.png)
@@ -30,9 +32,19 @@
 ### View donors by blood type
 ![list-type](./images/list-type.png)
 
+### Administrator Home View
+![admin-home](./images/admin-home.png)
+
+### Administrator Tasks View
+![admin-tasks](./images/admin-task.png)
+
 ## How to use
-To clone and run this application, you'll need Git and Python(which comes with pip) installed on you machine. From your commandline:
+To clone and run this application, you'll need [Git](https://git-scm.com/) and [Python](https://www.python.org/)(which comes with [pip](https://pip.pypa.io/en/stable/)) installed on you machine. From your commandline:
 ```shell
+# Added environment variables for MySQL or MariaDB
+$ export mysql-username="<username>"
+$ export mysql-password="<password>"
+
 # Clone this repo locally
 $ git clone https://github.com/abhigyanmadhukalya/bloodbank
 

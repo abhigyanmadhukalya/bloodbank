@@ -1,7 +1,11 @@
 from getpass import getpass
+from typing import Any, Dict
 
 import inquirer
 import mysql.connector
+from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract
+from mysql.connector.pooling import PooledMySQLConnection
+from mysql.connector.types import RowItemType, RowType
 import bloodbank_functions
 from models import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 from validate import (
@@ -14,14 +18,14 @@ from validate import (
 
 
 def admin_action():
-    questions = [
+    questions: list = [
         inquirer.List(
             "category",
             message="What would you like to do?",
             choices=["Admin Sign in", "Admin Register"],
         )
     ]
-    answers = inquirer.prompt(questions)
+    answers: dict[Any, Any] | None = inquirer.prompt(questions)
     if answers["category"] == "Admin Sign in":
         admin_sign_in()
         admin_tasks()
@@ -31,14 +35,14 @@ def admin_action():
 
 
 def admin_tasks():
-    questions = [
+    questions: list = [
         inquirer.List(
             "job",
             message="What would you like to do?",
             choices=["Delete donor data", "Modify donor data"],
         )
     ]
-    answers = inquirer.prompt(questions)
+    answers: dict[Any, Any] | None = inquirer.prompt(questions)
     if answers["job"] == "Delete donor data":
         delete_donor_table()
     elif answers["job"] == "Modify donor data":
@@ -46,17 +50,20 @@ def admin_tasks():
 
 
 def admin_register() -> None:
-    username = str(
+    username: str = str(
         inquirer.text(
             message="Enter username",
             validate=validate_username,
         )
     )
-    password = str(inquirer.text(message="Enter password", validate=validate_password))
-    conn = mysql.connector.connect(
+    password: str = str(
+        inquirer.text(message="Enter password", validate=validate_password)
+    )
+
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         cursor.execute(
             """
@@ -70,7 +77,7 @@ def admin_register() -> None:
             query = """
                 INSERT INTO admins (username, password) VALUES (%s, %s);
             """
-            values = (username, password)
+            values: tuple[str, str] = (username, password)
             cursor.execute(query, values)
             print("Registration successful")
     except mysql.connector.Error as e:
@@ -88,11 +95,11 @@ def admin_sign_in():
             validate=validate_username,
         )
     )
-    password = getpass(prompt="Enter password: ")
-    conn = mysql.connector.connect(
+    password: str = getpass(prompt="Enter password: ")
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
         cursor.execute(
             """
@@ -100,7 +107,7 @@ def admin_sign_in():
             """,
             (username,),
         )
-        admin = cursor.fetchone()
+        admin: RowType | Dict[str, RowItemType] | Any | None = cursor.fetchone()
         if admin is None:
             print(f"Username '{username}' does not exist.")
         else:
@@ -118,12 +125,12 @@ def admin_sign_in():
 
 
 def delete_donor_table():
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
-        yes_or_no = str(input("Are you sure? Y/N"))
+        yes_or_no: str = str(input("Are you sure? Y/N"))
         if yes_or_no in "Yy":
             cursor.execute(
                 """
@@ -144,12 +151,12 @@ def delete_donor_table():
 
 
 def modify_donor_table():
-    conn = mysql.connector.connect(
+    conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
     )
-    cursor = conn.cursor()
+    cursor: MySQLCursorAbstract | Any = conn.cursor()
     try:
-        name = str(
+        name: str = str(
             inquirer.text(message="Enter name to modify entry", validate=validate_name)
         )
         cursor.execute(
@@ -158,19 +165,19 @@ def modify_donor_table():
             """,
             (name,),
         )
-        donors = cursor.fetchone()
+        donors: RowType | Dict[str, RowItemType] | Any | None = cursor.fetchone()
         if donors is None:
             print(f"'{name.capitalize()}' is not a donor")
-        new_name = str(
+        new_name: str = str(
             inquirer.text(message="Enter new name for donor: ", validate=validate_name)
         )
-        new_contact_number = str(
+        new_contact_number: str = str(
             inquirer.text(
                 message="Enter new contact number for donor: ",
                 validate=validate_contact_number,
             )
         )
-        new_blood_type = str(
+        new_blood_type: str = str(
             inquirer.text(
                 message="Enter new blood type for donor: ", validate=validate_blood_type
             )

@@ -1,6 +1,9 @@
 from os import environ
+from typing import Any
 
 import mysql.connector
+from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 
 # Remember to add these to your environmental variables
 DB_HOST = "localhost"
@@ -11,8 +14,10 @@ DB_NAME = "bloodbank"
 
 def create_database() -> None:
     try:
-        conn = mysql.connector.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD)
-        cursor = conn.cursor()
+        conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
+            host=DB_HOST, user=DB_USER, password=DB_PASSWORD
+        )
+        cursor: MySQLCursorAbstract | Any = conn.cursor()
 
         # Create the database if it doesn't exist
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
@@ -27,10 +32,10 @@ def create_database() -> None:
 
 def create_tables() -> None:
     try:
-        conn = mysql.connector.connect(
+        conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
             host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
         )
-        cursor = conn.cursor()
+        cursor: MySQLCursorAbstract | Any = conn.cursor()
 
         # Create donors table
         cursor.execute(

@@ -1,5 +1,9 @@
+from typing import Any, NoReturn
+
 import inquirer
 import mysql.connector
+from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract
+from mysql.connector.pooling import PooledMySQLConnection
 from rich.traceback import install
 
 from bloodbank_functions import perform_action
@@ -16,18 +20,18 @@ from models import (
 install(show_locals=True)
 
 
-def main():
+def main() -> NoReturn:
     while True:
         create_database()
         create_tables()
 
-        conn = mysql.connector.connect(
+        conn: PooledMySQLConnection | MySQLConnectionAbstract = mysql.connector.connect(
             host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME
         )
-        cursor = conn.cursor()
+        cursor: MySQLCursorAbstract | Any = conn.cursor()
 
         try:
-            questions = [
+            questions: list = [
                 inquirer.List(
                     "options",
                     message="What would you like to do?",
@@ -40,7 +44,7 @@ def main():
                 )
             ]
 
-            answers = inquirer.prompt(questions)
+            answers: dict[Any, Any] | None = inquirer.prompt(questions)
             perform_action(answers)
         except mysql.connector.Error as e:
             print(f"Something went wrong: {str(e)}")
