@@ -64,4 +64,4 @@ MIT
 ---
 
 > Github: [@abhigyanmadhukalya](https://github.com/abhigyanmadhukalya)
-> Mastodon: [@abhigyanmadhukalya](https://mstdn.social/@abhigyanmadhukalya)
+> Mastodon: [@abhigyanmadhukalya](https://mastodon.social/@abhigyanmadhukalya)
